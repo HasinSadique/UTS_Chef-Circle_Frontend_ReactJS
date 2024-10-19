@@ -1,4 +1,5 @@
 import React from "react";
+import LOGO from "../../Assets/Chef_Circle-removebg-preview.png";
 
 const Navbar = () => {
   //   const [userDetails] = useContext(CurrentUserContext);
@@ -7,9 +8,14 @@ const Navbar = () => {
     <div className="sticky top-0 z-50 text-white">
       <div class="navbar bg-slate-900">
         <div class="flex-1">
-          <a style={{ color: "#e28041" }} class="btn btn-ghost text-2xl ">
+          <a
+            href="/"
+            style={{ color: "#e28041" }}
+            class="btn btn-ghost text-2xl "
+          >
             {" "}
-            ChefCirle{" "}
+            <img className="w-32 rounded-full bg-slate-900" src={LOGO} />{" "}
+            {/* ChefCirle{" "} */}
           </a>{" "}
         </div>{" "}
         {/* If user logged in show the div 
@@ -38,10 +44,10 @@ const Navbar = () => {
             </div>{" "}
             <ul
               tabindex="0"
-              class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+              class="menu menu-sm dropdown-content bg-slate-900 rounded-box z-[1] mt-3 w-52 p-2 shadow"
             >
               <li>
-                <a href="/login">Login</a>
+                <a href="/signin">Login</a>
               </li>
             </ul>
             {/* <ul
