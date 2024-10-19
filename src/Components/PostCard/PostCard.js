@@ -3,7 +3,7 @@ import React from "react";
 
 const PostCard = () => {
   return (
-    <div class="card bg-base-100 shadow-xl">
+    <div class=" text-white card bg-slate-900 shadow-xl">
       <div class="card-body">
         <div className="flex gap-2">
           <img
@@ -42,10 +42,10 @@ const PostCard = () => {
         </div>{" "}
         {/* Like or already liked */}{" "}
         <div className="flex gap-2 mt-2">
-          <button className="btn gap-2 w-24 flex">
+          <button className="btn gap-2 w-24 flex hover:bg-orange-500">
             <svg
-              style={{ fill: "#e28041" }}
-              //   fill="orange"
+              //   style={{ fill: "slate" }}
+              fill="slate"
               className="w-5"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 512 512"
@@ -60,10 +60,10 @@ const PostCard = () => {
             <input
               type="text"
               placeholder="Add a comment..."
-              className="input input-bordered w-3/4"
+              className="input input-bordered w-3/4 text-black"
             />
             <svg
-              fill="white"
+              fill="slate"
               className="w-12 btn hover:bg-orange-600 "
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 512 512"

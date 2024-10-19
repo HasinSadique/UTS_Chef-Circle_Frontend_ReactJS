@@ -8,7 +8,7 @@ import Signup from "./Components/Signup/Signup";
 
 function App() {
   return (
-    <div className="App bg-white">
+    <div className="App bg-slate-700">
       <Navbar> </Navbar>
       <Routes>
         <Route path="/" element={<Home />}></Route>

@@ -3,7 +3,7 @@ import PostCard from "../PostCard/PostCard";
 
 const Home = () => {
   return (
-    <div class="card bg-base-200 shadow-2xl lg:w-1/2 md:w-3/5 sm:w-3/4 mx-auto my-5 ">
+    <div class="card bg-slate-800 shadow-2xl lg:w-1/2 md:w-3/5 sm:w-3/4 mx-auto my-5 ">
       {/* Search bar*/}
       <div className="w-1/2 mx-auto mt-5">
         <label class="input input-bordered flex items-center gap-2">
