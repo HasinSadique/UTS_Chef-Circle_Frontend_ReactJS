@@ -11,7 +11,7 @@ function App() {
     <div className="App bg-white">
       <Navbar> </Navbar>
       <Routes>
-        <Route path="/" element={<Login></Login>}></Route>
+        <Route path="/" element={<Home />}></Route>
         <Route path="signin" element={<Login></Login>}></Route>
         <Route path="signup" element={<Signup></Signup>}></Route>
       </Routes>
