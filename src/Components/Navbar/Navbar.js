@@ -14,7 +14,10 @@ const Navbar = () => {
             class="btn btn-ghost text-2xl "
           >
             {" "}
-            <img className="w-32 rounded-full bg-slate-900" src={LOGO} />{" "}
+            <img
+              className="lg:w-32 md:w-28 sm:w-24 w-20 rounded-full bg-slate-900"
+              src={LOGO}
+            />{" "}
             {/* ChefCirle{" "} */}
           </a>{" "}
         </div>{" "}
