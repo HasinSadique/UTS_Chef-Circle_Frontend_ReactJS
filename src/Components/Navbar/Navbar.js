@@ -4,8 +4,8 @@ const Navbar = () => {
   //   const [userDetails] = useContext(CurrentUserContext);
   //   const userData = userDetails;
   return (
-    <div className="sticky top-0 z-50">
-      <div class="navbar bg-base-100">
+    <div className="sticky top-0 z-50 text-white">
+      <div class="navbar bg-slate-900">
         <div class="flex-1">
           <a style={{ color: "#e28041" }} class="btn btn-ghost text-2xl ">
             {" "}
@@ -41,7 +41,7 @@ const Navbar = () => {
               class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
             >
               <li>
-                <button>Login</button>
+                <a href="/login">Login</a>
               </li>
             </ul>
             {/* <ul
