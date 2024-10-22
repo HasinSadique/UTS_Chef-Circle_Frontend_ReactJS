@@ -58,13 +58,13 @@ const Signup = () => {
                 // onBlur={handleFirstNameBlur}
                 type="text"
                 placeholder="First Name"
-                className="input input-bordered w-full lg:mr-10 mr-5"
+                className="input input-bordered w-full lg:mr-10 mr-5 bg-white text-black"
               />
               <input
                 // onBlur={handleLastNameBlur}
                 type="text"
                 placeholder="Last Name"
-                className="input input-bordered w-full"
+                className="input input-bordered w-full bg-white text-black"
               />
             </div>{" "}
             <div className="flex mb-4">
@@ -74,33 +74,33 @@ const Signup = () => {
                 // defaultValue={email}
                 // disabled={userGoogle ? true : false}
                 placeholder="Email"
-                className="input input-bordered w-full lg:mr-10 mr-5"
+                className="input input-bordered w-full lg:mr-10 mr-5 bg-white text-black"
               />
               <input
                 // onBlur={handlePhoneNumberBlur}
                 type="text"
                 placeholder="Phone number"
-                className="input input-bordered w-full"
+                className="input input-bordered w-full bg-white text-black"
               />
             </div>{" "}
             <input
               //   onBlur={handleAddressBlur}
               type="text"
               placeholder="Address"
-              className="input input-bordered w-full mb-4"
+              className="input input-bordered w-full mb-4 bg-white text-black"
             />
             <div className="flex mb-4">
               <input
                 // onBlur={handleStateBlur}
                 type="text"
                 placeholder="State"
-                className="input input-bordered w-full lg:mr-10 mr-5"
+                className="input input-bordered w-full lg:mr-10 mr-5 bg-white text-black"
               />
               <input
                 // onBlur={handlePostalCodeBlur}
                 type="text"
                 placeholder="Postal code"
-                className="input input-bordered w-full"
+                className="input input-bordered w-full bg-white text-black"
               />
             </div>{" "}
             <div className="flex">
@@ -109,7 +109,7 @@ const Signup = () => {
                 // onBlur={handlePassBlur}
                 type="password"
                 placeholder="Password"
-                className="input input-bordered w-full mb-4"
+                className="input input-bordered w-full mb-4 bg-white text-black"
               />{" "}
               {showingPass ? (
                 <svg
@@ -146,7 +146,7 @@ const Signup = () => {
                 // onBlur={handleConfirmPassBlur}
                 type="password"
                 placeholder="Confirm Password"
-                className="input input-bordered w-full"
+                className="input input-bordered w-full bg-white text-black"
               />{" "}
               {showingConfirmPass ? (
                 <svg

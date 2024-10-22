@@ -49,14 +49,14 @@ const Login = () => {
                 onBlur={handleEmailBlur}
                 type="email"
                 placeholder="Email"
-                className="input input-bordered w-full mb-7"
+                className="input input-bordered w-full mb-7 bg-white text-black"
               />
               <input
                 required
                 onBlur={handlePasswordBlur}
                 type="password"
                 placeholder="Password"
-                className="input input-bordered w-full"
+                className="input input-bordered w-full bg-white text-black"
               />{" "}
               {error ? <h1 className="text-error"> {error} </h1> : <></>}{" "}
               <input
