@@ -1,29 +1,58 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { CurrentUserContext } from "../../App";
 
-const PostCard = () => {
+const PostCard = (props) => {
+  const [userDetails, setUserDetails] = useContext(CurrentUserContext);
+  // const { UID, Title, Description, Likes } = props.props;
+  const location = useLocation();
+  const [user, setUser] = useState({});
+  var fullname = "";
+
+  console.log(location.pathname);
+  useEffect(() => {
+    if (location.pathname == "/myprofile") {
+      //Use UID for current logged in user to get all the verified and unverified recipes
+    } else {
+      //Use UID of receipe posting user.
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   fetch(`http://localhost:5076/getuserbyid/${UID}`)
+  //     .then((res) => res.json())
+  //     .then((data) => setUser(data[0]));
+  // }, []);
   return (
     <div class=" text-white card bg-slate-900 shadow-xl">
       <div class="card-body">
+        <button
+          className={`absolute right-10 ${
+            location.pathname == "/myprofile" ? "" : "hidden"
+          }`}
+        >
+          <svg
+            className={`w-5`}
+            fill="orange"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 448 512"
+          >
+            {/* <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--> */}
+            <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
+          </svg>
+        </button>
         <div className="flex gap-2">
           <img
             className="w-10 rounded-full"
             alt="Tailwind CSS Navbar component"
             src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
           />
-          <h2 class="card-title"> User Full Name </h2>{" "}
+          <h2 class="card-title text-white"> {user.Fullname} </h2>{" "}
         </div>{" "}
-        <h3 class="text-left"> Caption / Topic name </h3>{" "}
-        <p className="text-left">
-          {" "}
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit.Id laborum
-          natus quasi veritatis, possimus ut impedit dolor velit omnis ullam,
-          mollitia reprehenderit optio nihil atque quidem incidunt temporibus
-          deleniti cum, beatae asperiores.Molestiae, doloremque iste quae ad
-          tempore distinctio illum et voluptas ? Aliquam possimus error saepe
-          minima officia incidunt.Sit.{" "}
-        </p>{" "}
-        <div class="flex justify-between mt-5 border-y-2 border-base-300 py-2">
+        <h3 class="text-left font-bold text-2xl font-serif"> {"Title"} </h3>{" "}
+        <p className="text-left">{"Description"}</p>{" "}
+        <div class="flex justify-between mt-5 border-y border-slate-700 py-2">
           <div class="flex justify-center items-center my-auto gap-1">
             <svg
               style={{ fill: "#e28041" }}
@@ -36,12 +65,16 @@ const PostCard = () => {
               {/* <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--> */}{" "}
               <path d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2l144 0c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48l-97.5 0c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3l0-38.3 0-48 0-24.9c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192l64 0c17.7 0 32 14.3 32 32l0 224c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32-14.3-32-32L0 224c0-17.7 14.3-32 32-32z" />{" "}
             </svg>{" "}
-            <h1 className="text-sm"> 15 </h1>{" "}
+            <h1 className="text-sm"> {"Likes"} </h1>{" "}
           </div>{" "}
-          <h1 class="text-sm"> 10 Comments </h1>{" "}
+          {/* <h1 class="text-sm"> 10 Comments </h1>{" "} */}
         </div>{" "}
         {/* Like or already liked */}{" "}
-        <div className="flex gap-2 mt-2">
+        <div
+          className={`flex gap-2 mt-2 ${
+            location.pathname == "/myprofile" ? "hidden" : ""
+          }`}
+        >
           <button className="btn gap-2 w-24 flex hover:bg-orange-500">
             <svg
               //   style={{ fill: "slate" }}
@@ -60,7 +93,7 @@ const PostCard = () => {
             <input
               type="text"
               placeholder="Add a comment..."
-              className="input input-bordered w-3/4 text-black"
+              className="input input-bordered w-full text-black"
             />
             <svg
               fill="slate"
@@ -74,6 +107,18 @@ const PostCard = () => {
             </svg>{" "}
           </div>{" "}
         </div>{" "}
+        <div className="w-full">
+          <div class="collapse collapse-arrow bg-slate-800">
+            <input type="checkbox" name="my-accordion-2" />
+            <div class="collapse-title text-left font-normal text-base">
+              Comments (10)
+            </div>
+            {/* Show all comments here and make below div scrollable */}
+            <div class="collapse-content">
+              <p>hello</p>
+            </div>
+          </div>
+        </div>
       </div>{" "}
     </div>
   );

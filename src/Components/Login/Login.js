@@ -38,7 +38,7 @@ const Login = () => {
         <img className="w-1/2 lg:w-5/6 mx-auto bg-slate-800" src={LOGO} />{" "}
       </div>{" "}
       {/* Login Form */}
-      <div className="bg-slate-900">
+      <div className="bg-slate-900 rounded-3xl">
         {" "}
         <div className="text-white lg:mx-auto md:mx-40 sm:mx-20 sm:p-10 md:p-14 mx-5 p-5 rounded-3xl lg:max-w-fit grid grid-cols-1 shadow-2xl">
           <h1 className="text-2xl mb-8 font-semibold"> SIGN IN </h1>{" "}
@@ -70,7 +70,7 @@ const Login = () => {
             <h1 className="mt-12">
               Dont 't have an account?{" "}
               <span className="text-orange-400 hover:text-orange-600 font-semibold ml-2">
-                <a href="/signup"> Signup </a>{" "}
+                <a href="/signup"> Sign Up </a>{" "}
               </span>{" "}
             </h1>{" "}
           </div>{" "}

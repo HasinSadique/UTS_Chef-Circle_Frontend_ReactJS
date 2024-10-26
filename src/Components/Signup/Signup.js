@@ -1,6 +1,11 @@
 import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.state?.from?.pathname || "/signin";
+
   const [FirstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [address, setAddress] = useState("");
@@ -43,33 +48,95 @@ const Signup = () => {
   const handleConfirmPassBlur = (event) => {
     setConfirmPass(event.target.value);
   };
+  const handleShowPass = (event) => {
+    document.getElementById("PasswordInput").setAttribute("type", "text");
+    setShowingPass(true);
+  };
+  const handleDontShowPass = (event) => {
+    document.getElementById("PasswordInput").setAttribute("type", "password");
+    setShowingPass(false);
+  };
+  const handleShowConfirmPass = (event) => {
+    document
+      .getElementById("ConfirmPasswordInput")
+      .setAttribute("type", "text");
+    setShowingConfirmPass(true);
+  };
+  const handleDontShowConfirmPass = (event) => {
+    document
+      .getElementById("ConfirmPasswordInput")
+      .setAttribute("type", "password");
+    setShowingConfirmPass(false);
+  };
+
+  const handleRegisterBtn = (event) => {
+    event.preventDefault();
+    if (pass == confirmPass && pass.length != 0 && confirmPass.length != 0) {
+      // Save to DB
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          Fullname: FirstName + " " + lastName,
+          address: address + " " + state + " " + postalCode,
+          email: email,
+          phoneNumber: phoneNumber,
+          password: pass,
+          Role: "Chef",
+        }),
+      };
+      // console.log(requestOptions.body);
+
+      fetch("http://localhost:5076/signup", requestOptions);
+      // .then((res) => res.json())
+      // .then((data) => {
+      //   console.log(data);
+      //   if (data.status == "Success" && data.user_id != 0) {
+      //     alert(data.msg);
+      //     // Change UI to signin page
+      //     // googleSignOut();
+      //     navigate(from, { replace: true });
+      //   } else {
+      //     setErrorMsg(data.msg);
+      //   }
+      // });
+    } else {
+      alert("Please enter the details correctly.");
+    }
+  };
 
   return (
-    <div className=" grid grid-cols-1 items-center py-10 bg-slate-800 text-white">
+    <div className=" grid grid-cols-1 items-center lg:py-40 md:py-20 py-10 px-5 bg-slate-800 text-white">
       <div>
         <h1 className="text-2xl mb-5 font-semibold"> SIGN UP </h1>{" "}
         <form
-          //   onSubmit={handleRegisterBtn}
-          className="bg-slate-900 lg:mx-auto xs:mx-5 lg:p-14 xs:p-5 rounded-3xl lg:w-1/2 shadow-2xl"
+          onSubmit={handleRegisterBtn}
+          className="bg-slate-900 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-auto px-5 py-5 lg:p-14 xs:p-5 rounded-3xl lg:w-1/2 md:w-3/4 shadow-2xl"
         >
           <div>
-            <div className="flex mb-4 ">
+            <div className="flex">
               <input
-                // onBlur={handleFirstNameBlur}
+                onBlur={handleFirstNameBlur}
                 type="text"
                 placeholder="First Name"
                 className="input input-bordered w-full lg:mr-10 mr-5 bg-white text-black"
               />
               <input
-                // onBlur={handleLastNameBlur}
+                onBlur={handleLastNameBlur}
                 type="text"
                 placeholder="Last Name"
                 className="input input-bordered w-full bg-white text-black"
               />
             </div>{" "}
-            <div className="flex mb-4">
+            <div class="label mb-4">
+              <span class="label-text-alt text-red-500 text-center w-full">
+                *** First and last name cannot be changed once registered
+              </span>
+              {/* <span class="label-text-alt">Bottom Right label</span> */}
+            </div>
+            <div className="flex">
               <input
-                // onBlur={handleEmailBlur}
+                onBlur={handleEmailBlur}
                 type="email"
                 // defaultValue={email}
                 // disabled={userGoogle ? true : false}
@@ -77,27 +144,33 @@ const Signup = () => {
                 className="input input-bordered w-full lg:mr-10 mr-5 bg-white text-black"
               />
               <input
-                // onBlur={handlePhoneNumberBlur}
+                onBlur={handlePhoneNumberBlur}
                 type="text"
                 placeholder="Phone number"
                 className="input input-bordered w-full bg-white text-black"
               />
             </div>{" "}
+            <div class="label mb-4">
+              <span class="label-text-alt text-red-500 text-center w-full">
+                *** Email and phone number cannot be changed once registered
+              </span>
+              {/* <span class="label-text-alt">Bottom Right label</span> */}
+            </div>
             <input
-              //   onBlur={handleAddressBlur}
+              onBlur={handleAddressBlur}
               type="text"
               placeholder="Address"
               className="input input-bordered w-full mb-4 bg-white text-black"
             />
             <div className="flex mb-4">
               <input
-                // onBlur={handleStateBlur}
+                onBlur={handleStateBlur}
                 type="text"
                 placeholder="State"
                 className="input input-bordered w-full lg:mr-10 mr-5 bg-white text-black"
               />
               <input
-                // onBlur={handlePostalCodeBlur}
+                onBlur={handlePostalCodeBlur}
                 type="text"
                 placeholder="Postal code"
                 className="input input-bordered w-full bg-white text-black"
@@ -106,14 +179,14 @@ const Signup = () => {
             <div className="flex">
               <input
                 id="PasswordInput"
-                // onBlur={handlePassBlur}
+                onBlur={handlePassBlur}
                 type="password"
                 placeholder="Password"
                 className="input input-bordered w-full mb-4 bg-white text-black"
               />{" "}
               {showingPass ? (
                 <svg
-                  //   onClick={handleDontShowPass}
+                  onClick={handleDontShowPass}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="currentColor"
@@ -125,7 +198,7 @@ const Signup = () => {
                 </svg>
               ) : (
                 <svg
-                  //   onClick={handleShowPass}
+                  onClick={handleShowPass}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="currentColor"
@@ -143,14 +216,14 @@ const Signup = () => {
             <div className="flex">
               <input
                 id="ConfirmPasswordInput"
-                // onBlur={handleConfirmPassBlur}
+                onBlur={handleConfirmPassBlur}
                 type="password"
                 placeholder="Confirm Password"
                 className="input input-bordered w-full bg-white text-black"
               />{" "}
               {showingConfirmPass ? (
                 <svg
-                  //   onClick={handleDontShowConfirmPass}
+                  onClick={handleDontShowConfirmPass}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="currentColor"
@@ -162,7 +235,7 @@ const Signup = () => {
                 </svg>
               ) : (
                 <svg
-                  //   onClick={handleShowConfirmPass}
+                  onClick={handleShowConfirmPass}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="currentColor"
