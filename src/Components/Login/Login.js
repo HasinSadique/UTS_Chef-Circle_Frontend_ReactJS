@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import LOGO from "../../Assets/Chef_Circle-removebg-preview.png";
 import { useLocation, useNavigate } from "react-router-dom";
+import { CurrentUserContext } from "../../App";
 
 const Login = () => {
+  // setCurrentUserDetails
+  const [currentUserDetails, setCurrentUserDetails] =
+    useContext(CurrentUserContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  //   const navigate = useNavigate();
-  //   const location = useLocation();
-  //   const from = location?.state?.from?.pathname || "/";
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.state?.from?.pathname || "/";
 
   const handleEmailBlur = (event) => {
     setEmail(event.target.value);
@@ -20,15 +25,66 @@ const Login = () => {
 
   const handleLoginBtn = async (event) => {
     event.preventDefault();
-    console.log(email, " >>> ", password);
     // For Actual Login
-    // const requestOptions = {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     email: email,
-    //     password: password,
-    //   }),
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    };
+
+    fetch("http://localhost:5076/signin", requestOptions)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status == "200" && data.success == true) {
+          // console.log("Check data >>>>>>>>", data.result.Result[0]);
+          // console.log("Check data >>>>>>>>", data.result.Result[0].Fullname);
+
+          // Saving data in local storage
+          localStorage.setItem("currentUID", data.result.Result[0].UID);
+          localStorage.setItem(
+            "currentFullname",
+            data.result.Result[0].Fullname
+          );
+          localStorage.setItem("currentEmail", data.result.Result[0].Email);
+          localStorage.setItem("currentAddress", data.result.Result[0].Address);
+          localStorage.setItem("currentPhone", data.result.Result[0].Phone);
+          localStorage.setItem(
+            "currentPhotoURL",
+            data.result.Result[0].PhotoURL
+          );
+          localStorage.setItem("currentRole", data.result.Result[0].Role);
+
+          localStorage.setItem(
+            "currentPassword",
+            data.result.Result[0].Password
+          );
+
+          var currenUser = {
+            UID: localStorage.getItem("currentUID"),
+            Fullname: localStorage.getItem("currentFullname"),
+            Email: localStorage.getItem("currentEmail"),
+            Password: localStorage.getItem("currentPassword"),
+            Phone: localStorage.getItem("currentPhone"),
+            Address: localStorage.getItem("currentAddress"),
+            PhotURL: localStorage.getItem("currentPhotoURL"),
+            Role: localStorage.getItem("currentRole"),
+          };
+
+          console.log("kalo >>>> ", currenUser);
+          setCurrentUserDetails(currenUser);
+          if (data.result.Result[0].Role == "Masterchef") {
+            navigate("/masterchef-dashboard");
+          } else {
+            navigate(from, { replace: true });
+          }
+        } else {
+          setError(data.msg);
+          alert(`Message: ${data.msg}`);
+        }
+      });
   };
 
   return (

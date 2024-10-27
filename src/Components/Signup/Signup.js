@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { CurrentUserContext } from "../../App";
 
 const Signup = () => {
+  const [currentUserDetails, setCurrentUserDetails] =
+    useContext(CurrentUserContext);
+
   const navigate = useNavigate();
   const location = useLocation();
   const from = location?.state?.from?.pathname || "/signin";
@@ -12,7 +16,7 @@ const Signup = () => {
   const [state, setState] = useState();
   const [postalCode, setPostalCode] = useState();
   const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phone, setPhone] = useState("");
   const [pass, setPass] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
 
@@ -40,7 +44,7 @@ const Signup = () => {
     setEmail(event.target.value);
   };
   const handlePhoneNumberBlur = (event) => {
-    setPhoneNumber(event.target.value);
+    setPhone(event.target.value);
   };
   const handlePassBlur = (event) => {
     setPass(event.target.value);
@@ -80,26 +84,26 @@ const Signup = () => {
           Fullname: FirstName + " " + lastName,
           address: address + " " + state + " " + postalCode,
           email: email,
-          phoneNumber: phoneNumber,
+          Phone: phone,
           password: pass,
           Role: "Chef",
         }),
       };
       // console.log(requestOptions.body);
 
-      fetch("http://localhost:5076/signup", requestOptions);
-      // .then((res) => res.json())
-      // .then((data) => {
-      //   console.log(data);
-      //   if (data.status == "Success" && data.user_id != 0) {
-      //     alert(data.msg);
-      //     // Change UI to signin page
-      //     // googleSignOut();
-      //     navigate(from, { replace: true });
-      //   } else {
-      //     setErrorMsg(data.msg);
-      //   }
-      // });
+      fetch("http://localhost:5076/signup", requestOptions)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (data.success == true && data.status == 200 && data.result != 0) {
+            alert(data.msg);
+            //   // Change UI to signin page
+            //   // googleSignOut();
+            navigate(from, { replace: true });
+          } else {
+            setErrorMsg(data.msg);
+          }
+        });
     } else {
       alert("Please enter the details correctly.");
     }

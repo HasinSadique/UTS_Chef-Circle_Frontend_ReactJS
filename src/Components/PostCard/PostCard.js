@@ -4,32 +4,145 @@ import { useLocation } from "react-router-dom";
 import { CurrentUserContext } from "../../App";
 
 const PostCard = (props) => {
-  const [userDetails, setUserDetails] = useContext(CurrentUserContext);
-  // const { UID, Title, Description, Likes } = props.props;
+  const [currentUserDetails, setCurrentUserDetails] =
+    useContext(CurrentUserContext);
+
+  const { RID, UID, Title, Description, Likes } = props.props;
   const location = useLocation();
   const [user, setUser] = useState({});
-  var fullname = "";
+  const [comment, setComment] = useState("");
+  const [commentData, setCommentData] = useState([]);
+  var currentID = localStorage.getItem("currentUID");
+  const [rating, setRating] = useState();
+  const [checked, setChecked] = useState();
+  const [like, setLike] = useState(Likes);
 
-  console.log(location.pathname);
+  var handleApprovePost = (id) => {
+    console.log("RID:", id);
+
+    const requestOptions = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        RID: RID,
+      }),
+    };
+
+    fetch("http://localhost:5076/approverecipe", requestOptions)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.success == true && data.status == 200) {
+          // setLike(data.result.updatedLikes);
+          window.location.reload(true);
+        }
+      });
+  };
+  var handleLikeBtn = () => {
+    setChecked(true);
+    const requestOptions = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        RID: RID,
+      }),
+    };
+
+    fetch("http://localhost:5076/api/addlike", requestOptions)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.success == true && data.status == 200) {
+          setLike(data.result.updatedLikes);
+        }
+      });
+  };
+
+  var handleCommentBlur = (event) => {
+    setComment(event.target.value);
+  };
+
+  var handleAddCommentBtn = (event) => {
+    // event.preventDefault();
+    console.log("Comment>>>> ", comment);
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        RID: RID,
+        UID: currentID,
+        Comment: comment,
+      }),
+    };
+
+    fetch("http://localhost:5076/api/addComment", requestOptions)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.success == true && data.status == 201) {
+          window.location.reload(true);
+        } else {
+          alert(data.msg);
+          // setErrorMsg(data.msg);
+        }
+      });
+  };
+
+  var handleDeletePost = (rid) => {
+    console.log("Comment>>>> ", rid);
+    // var response = confirm("Are you sure you want to proceed?");
+    // console.log("response ", response);
+    const requestOptions = {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        RID: RID,
+      }),
+    };
+
+    fetch(`http://localhost:5076/deletepost`, requestOptions)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.success == true && data.status == 200) {
+          alert(data.msg);
+          window.location.reload(true);
+        } else {
+          alert(data.msg);
+          // setErrorMsg(data.msg);
+        }
+      });
+  };
+
+  // For getting user info
   useEffect(() => {
-    if (location.pathname == "/myprofile") {
-      //Use UID for current logged in user to get all the verified and unverified recipes
-    } else {
-      //Use UID of receipe posting user.
-    }
+    fetch(`http://localhost:5076/getuserbyid/${UID}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data[0]);
+      });
+  }, [user]);
+
+  useEffect(() => {
+    fetch(`http://localhost:5076/getallcomments/${RID}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setCommentData(data.result);
+      });
   }, []);
 
-  // useEffect(() => {
-  //   fetch(`http://localhost:5076/getuserbyid/${UID}`)
-  //     .then((res) => res.json())
-  //     .then((data) => setUser(data[0]));
-  // }, []);
+  // console.log("location path", location.pathname);
+
+  // For getting comments.
   return (
     <div class=" text-white card bg-slate-900 shadow-xl">
       <div class="card-body">
         <button
+          onClick={() => {
+            // handleDeletePost(RID);
+          }}
           className={`absolute right-10 ${
-            location.pathname == "/myprofile" ? "" : "hidden"
+            location.pathname == "/myProfile" ? "hidden" : "hidden"
           }`}
         >
           <svg
@@ -38,7 +151,7 @@ const PostCard = (props) => {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 448 512"
           >
-            {/* <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--> */}
+            {/* <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--> */}{" "}
             <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
           </svg>
         </button>
@@ -50,10 +163,16 @@ const PostCard = (props) => {
           />
           <h2 class="card-title text-white"> {user.Fullname} </h2>{" "}
         </div>{" "}
-        <h3 class="text-left font-bold text-2xl font-serif"> {"Title"} </h3>{" "}
-        <p className="text-left">{"Description"}</p>{" "}
-        <div class="flex justify-between mt-5 border-y border-slate-700 py-2">
-          <div class="flex justify-center items-center my-auto gap-1">
+        <h3 class="text-left font-bold text-2xl font-serif"> {Title} </h3>{" "}
+        <p className="text-left"> {Description} </p>{" "}
+        <div class="lg:flex justify-between mt-5 border-y border-slate-700 py-2">
+          <div
+            class={`flex items-center my-auto gap-1 ${
+              location.pathname == "/masterchef-dashboard/unverified-recipes"
+                ? "hidden"
+                : ""
+            }`}
+          >
             <svg
               style={{ fill: "#e28041" }}
               //   fill="orange"
@@ -65,20 +184,64 @@ const PostCard = (props) => {
               {/* <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--> */}{" "}
               <path d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2l144 0c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48l-97.5 0c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3l0-38.3 0-48 0-24.9c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192l64 0c17.7 0 32 14.3 32 32l0 224c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32-14.3-32-32L0 224c0-17.7 14.3-32 32-32z" />{" "}
             </svg>{" "}
-            <h1 className="text-sm"> {"Likes"} </h1>{" "}
+            <h1 className="text-sm"> {like} </h1>{" "}
           </div>{" "}
-          {/* <h1 class="text-sm"> 10 Comments </h1>{" "} */}
+          <div
+            class={`flex gap-2 justify-center items-center text-sm ${
+              location.pathname == "/masterchef-dashboard/unverified-recipes"
+                ? ""
+                : "hidden"
+            }`}
+          >
+            <svg
+              fill="orange"
+              className="w-5 "
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 576 512"
+            >
+              {/* <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--> */}{" "}
+              <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" />
+            </svg>
+            Rate:{" "}
+            <input
+              className="w-20 bg-white text-black p-1"
+              type="number"
+              max="5"
+              min="0"
+              defaultValue="0"
+              step="1"
+              onBlur={(e) => {
+                if (e.target.value > 5) {
+                  setRating(5);
+                } else if (e.target.value < 0) {
+                  setRating(0);
+                } else {
+                  setRating(e.target.value);
+                }
+              }}
+            />{" "}
+          </div>{" "}
         </div>{" "}
         {/* Like or already liked */}{" "}
         <div
           className={`flex gap-2 mt-2 ${
-            location.pathname == "/myprofile" ? "hidden" : ""
+            location.pathname == "/myProfile" ||
+            location.pathname == "/masterchef-dashboard/unverified-recipes"
+              ? "hidden"
+              : ""
           }`}
         >
-          <button className="btn gap-2 w-24 flex hover:bg-orange-500">
+          <button
+            onClick={() => {
+              handleLikeBtn();
+            }}
+            className={`btn gap-2 w-24 flex hover:bg-orange-500 ${
+              checked ? "bg-orange-600 text-white" : ""
+            }`}
+          >
             <svg
               //   style={{ fill: "slate" }}
-              fill="slate"
+              fill="orange"
               className="w-5"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 512 512"
@@ -91,12 +254,15 @@ const PostCard = (props) => {
           </button>{" "}
           <div className="flex justify-center w-full items-center gap-2">
             <input
+              required
+              onBlur={handleCommentBlur}
               type="text"
               placeholder="Add a comment..."
-              className="input input-bordered w-full text-black"
+              className="input input-bordered w-full text-black bg-white"
             />
             <svg
-              fill="slate"
+              onClick={handleAddCommentBtn}
+              fill="orange"
               className="w-12 btn hover:bg-orange-600 "
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 512 512"
@@ -107,18 +273,43 @@ const PostCard = (props) => {
             </svg>{" "}
           </div>{" "}
         </div>{" "}
-        <div className="w-full">
-          <div class="collapse collapse-arrow bg-slate-800">
-            <input type="checkbox" name="my-accordion-2" />
-            <div class="collapse-title text-left font-normal text-base">
-              Comments (10)
-            </div>
-            {/* Show all comments here and make below div scrollable */}
-            <div class="collapse-content">
-              <p>hello</p>
-            </div>
+        {location.pathname == "/masterchef-dashboard/unverified-recipes" ? (
+          <button
+            onClick={() => {
+              handleApprovePost(RID);
+            }}
+            className="btn btn-success"
+          >
+            Approve post{" "}
+          </button>
+        ) : (
+          <div
+            className={`w-full ${
+              location.pathname == "/masterchef-dashboard/unverified-recipes"
+                ? "hidden"
+                : ""
+            }`}
+          >
+            <div class={`collapse collapse-arrow bg-slate-800 `}>
+              <input type="checkbox" name="my-accordion-2" />
+              <div class="collapse-title text-left font-extrabold text-base">
+                Comments{" "}
+              </div>{" "}
+              {/* Show all comments here and make below div scrollable */}{" "}
+              <div class="collapse-content">
+                {" "}
+                {commentData.map((comment, index) => (
+                  <div key={index} className="">
+                    <p className="text-left border-b mb-3" key={index}>
+                      {" "}
+                      {comment.Comment}{" "}
+                    </p>
+                  </div>
+                ))}
+              </div>{" "}
+            </div>{" "}
           </div>
-        </div>
+        )}{" "}
       </div>{" "}
     </div>
   );
