@@ -377,7 +377,7 @@ const MyProfile = () => {
                 accept=".jpg, .png, .bmp, .gif, .tif, .webp, .heic"
                 onBlur={handleFileUploadBlur}
                 onChange={handleFileChange}
-                className="input py-1.5 input-bordered w-full mb-3"
+                className="input py-1.5 input-bordered w-full mb-3 text-black bg-white"
               />
               <div className="label">
                 <span className="label-text text-white"> Address </span>{" "}
@@ -388,7 +388,7 @@ const MyProfile = () => {
                 value={address}
                 type="text"
                 placeholder="Your address.."
-                className="input input-bordered w-full mb-3"
+                className="input input-bordered w-full mb-3 text-black bg-white"
               />
               <div className="label">
                 <span className="label-text text-white"> Phone Number </span>{" "}
@@ -399,7 +399,7 @@ const MyProfile = () => {
                 value={phoneNumber}
                 type="text"
                 placeholder="Your phone number.."
-                className="input input-bordered w-full mb-3"
+                className="input input-bordered w-full mb-3 text-black bg-white"
               />
               <div className="flex gap-3 px-3">
                 <svg
@@ -456,7 +456,7 @@ const MyProfile = () => {
                 onBlur={handleOldPassword}
                 type="password"
                 placeholder="Type old password."
-                className="input input-bordered w-full mb-3"
+                className="input input-bordered w-full mb-3 text-black bg-white"
               />
               <div className="label">
                 <span className="label-text text-white"> Password </span>{" "}
@@ -465,7 +465,7 @@ const MyProfile = () => {
                 onBlur={handlePasswordBlur}
                 type="password"
                 placeholder="Password"
-                className="input input-bordered w-full mb-3"
+                className="input input-bordered w-full mb-3 text-black bg-white"
               />
               <div className="label">
                 <span className="label-text text-white">
@@ -477,7 +477,7 @@ const MyProfile = () => {
                 onBlur={handleReTypePasswordBlur}
                 type="password"
                 placeholder="Re-type Password"
-                className="input input-bordered w-full mb-3"
+                className="input input-bordered w-full mb-3 text-black bg-white"
               />
               <h1 className="text-red-500">{passwordErrorMsg}</h1>
               <div className="flex gap-3 justify-center items-center mt-5">
