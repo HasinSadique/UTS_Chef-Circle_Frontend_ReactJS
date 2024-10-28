@@ -1,22 +1,45 @@
 import React, { useContext, useEffect, useState } from "react";
 import PostCard from "../PostCard/PostCard";
 import { CurrentUserContext } from "../../App";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 const MyProfile = () => {
   const [userDetails, setUserDetails] = useContext(CurrentUserContext);
+  const [loading, setLoading] = useState(false);
+
+  const [user, setUser] = useState({});
+  // const imgStorageKey = "29ddb5c3f1924fa5b37d8c1f1a90e4a2";
+  const imgStorageKey = "19c78816efd779e64d31837b5a4fdea2";
 
   const [recipes, seRecipes] = useState([]);
 
-  var UID = localStorage.getItem("currentUID");
+  var UID = parseInt(localStorage.getItem("currentUID"));
   var currentFullname = localStorage.getItem("currentFullname");
   var role = localStorage.getItem("currentRole");
-  var address = localStorage.getItem("currentAddress");
+  // var address = localStorage.getItem("currentAddress");
   var email = localStorage.getItem("currentEmail");
-  var phone = localStorage.getItem("currentPhone");
-  var photoURL = localStorage.getItem("curentPhotoURL");
+  // var phone = localStorage.getItem("currentPhone");
+  var Password = localStorage.getItem("currentPassword");
+  var photoURL = user ? user.PhotoURL : localStorage.getItem("currentPhotoURL");
+  // console.log("WOW", photoURL);
 
   const [isUpdateDetailsModalOpen, setIsUpdateDetailsModalOpen] =
     useState(false);
+  const [oldPassword, setOldPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [reTypePassword, setReTypePassword] = useState("");
+  const [passwordErrorMsg, setPasswordErrorMsg] = useState("");
+  const [updateDetailsErrorMsg, setUpdateDetailsErrorMsg] = useState("");
+
+  const [address, setAddress] = useState(
+    localStorage.getItem("currentAddress")
+  );
+  const [phoneNumber, setPhoneNumber] = useState(
+    localStorage.getItem("currentPhone")
+  );
+
+  const [imgFile, setImgFile] = useState([]);
+
   const [isUpdatePasswordModalOpen, setIsUpdatePasswordModalOpen] =
     useState(false);
 
@@ -24,10 +47,185 @@ const MyProfile = () => {
   const closeUpdateDetailsModal = () => setIsUpdateDetailsModalOpen(false);
 
   const openUpdatePasswordModal = () => setIsUpdatePasswordModalOpen(true);
-  const closeUpdatePasswordsModal = () => setIsUpdatePasswordModalOpen(false);
+  const closeUpdatePasswordsModal = () => {
+    setPasswordErrorMsg("");
+    setIsUpdatePasswordModalOpen(false);
+  };
+
+  const handleFileChange = (e) => {
+    e.preventDefault();
+    // setImageError("");
+    setImgFile(e.target.files);
+  };
+
+  const handleFileUploadBlur = (e) => {
+    e.preventDefault();
+    setImgFile([]);
+    setImgFile(e.target.files);
+  };
+
+  const handleOldPassword = (e) => {
+    setOldPassword(e.target.value);
+  };
+  const handlePasswordBlur = (e) => {
+    setPassword(e.target.value);
+  };
+  const handleReTypePasswordBlur = (e) => {
+    setReTypePassword(e.target.value);
+  };
+
+  const handleAddressBlur = (e) => {
+    setAddress(e.target.value);
+  };
+  const handleAddressChange = (e) => {
+    setAddress(e.target.value);
+  };
+  const handlePhoneNumberBlur = (e) => {
+    setPhoneNumber(e.target.value);
+  };
+  const handlePhoneNumberChange = (e) => {
+    setPhoneNumber(e.target.value);
+  };
+
+  const handleChangePassowrd = (e) => {
+    e.preventDefault();
+    console.log("hello: >> ", typeof UID);
+    if (oldPassword == Password && password == reTypePassword) {
+      const requestOptions = {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          UID: UID,
+          OldPass: oldPassword,
+          NewPass: password,
+        }),
+      };
+
+      fetch("https://localhost:7262/changepassword", requestOptions)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (data.success && data.status == 200 && data.result == 1) {
+            localStorage.setItem("currentPassword", password);
+            Password = password;
+            alert(data.msg);
+            setIsUpdatePasswordModalOpen(false);
+          } else {
+            setPasswordErrorMsg(data.msg);
+          }
+        });
+    } else {
+      setPasswordErrorMsg(
+        "Password mismatch. Check the passwords and try again!"
+      );
+    }
+  };
+
+  const handleUpdateBtn = (event) => {
+    event.preventDefault();
+    console.log("wow");
+    const image = imgFile[0];
+    const formData = new FormData();
+    formData.append("image", image);
+
+    const url = `https://api.imgbb.com/1/upload?key=${imgStorageKey}`;
+    setLoading(true);
+    fetch(url, {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.success) {
+          const imgUrl = result.data.url;
+
+          console.log(imgUrl);
+          const updateDetails = {
+            PhotoURL: imgUrl,
+            Address: address,
+            Phone: phoneNumber,
+          };
+          // var val = false;
+          const requestOptions = {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              UID: UID,
+              PhotoURL: updateDetails.PhotoURL,
+              Address: updateDetails.Address,
+              Phone: updateDetails.Phone,
+            }),
+          };
+
+          console.log("uploading \n", requestOptions.body);
+          fetch("https://localhost:7262/update-userdetails", requestOptions)
+            .then((res) => res.json())
+            .then((data) => {
+              console.log(data);
+              if (data.success && data.status == 200 && data.result == 1) {
+                // val = true;
+                alert("Data saved successfully");
+                setLoading(false);
+                setIsUpdateDetailsModalOpen(false);
+                window.location.reload(true);
+              } else {
+                setLoading(false);
+                setUpdateDetailsErrorMsg(
+                  "Could not save data. Contact Developer!!"
+                );
+                console.log("Error: check saveData function msg.");
+              }
+            });
+        } else {
+          setUpdateDetailsErrorMsg(
+            "Could not save to imgbb. Contact Developer!!"
+          );
+          console.log("Error: check saveData function result data.");
+        }
+      });
+  };
+
+  // For getting user info
+  useEffect(() => {
+    fetch(`https://localhost:7262/getuserbyid/${UID}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data[0]);
+        if (data[0].PhotoURL != null) {
+          photoURL = data[0].PhotoURL;
+          localStorage.setItem("currentPhotoURL", data[0].PhotoURL);
+        }
+      });
+  }, []);
+
+  const saveData = (updateDetails) => {
+    var val = false;
+    console.log("my update details: ", updateDetails);
+    const requestOptions = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        UID: UID,
+        PhotoURL: updateDetails.PhotoURL,
+        Address: updateDetails.Address,
+        Phone: updateDetails.Phone,
+      }),
+    };
+
+    console.log("uploading \n", requestOptions.body);
+    fetch("https://localhost:7262/update-userdetails", requestOptions)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.success && data.status == 200 && data.result == 1) {
+          val = true;
+        }
+      });
+    return val;
+  };
 
   useEffect(() => {
-    fetch("http://localhost:5076/getallrecipes")
+    fetch("https://localhost:7262/getallrecipes")
       .then((res) => res.json())
       .then((data) => seRecipes(data));
   }, []);
@@ -51,7 +249,7 @@ const MyProfile = () => {
           />{" "}
           <div className="lg:flex justify-between items-center w-full ">
             <div className=" my-5">
-              <h2 class=" card-title text-white lg:text-3xl md:text-wxl sm:text-xl text-lg block">
+              <h2 className=" card-title text-white lg:text-3xl md:text-wxl sm:text-xl text-lg block">
                 {" "}
                 {currentFullname}{" "}
               </h2>{" "}
@@ -69,7 +267,7 @@ const MyProfile = () => {
                 3.5{" "}
               </span>{" "}
             </div>{" "}
-            <div className="grid hidden">
+            <div className="grid">
               <button
                 onClick={openUpdateDetailsModal}
                 className="btn bg-orange-400 hover:bg-orange-600 text-black font-bold my-auto"
@@ -143,14 +341,14 @@ const MyProfile = () => {
                 {/* <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--> */}{" "}
                 <path d="M280 0C408.1 0 512 103.9 512 232c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-101.6-82.4-184-184-184c-13.3 0-24-10.7-24-24s10.7-24 24-24zm8 192a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm-32-72c0-13.3 10.7-24 24-24c75.1 0 136 60.9 136 136c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-48.6-39.4-88-88-88c-13.3 0-24-10.7-24-24zM117.5 1.4c19.4-5.3 39.7 4.6 47.4 23.2l40 96c6.8 16.3 2.1 35.2-11.6 46.3L144 207.3c33.3 70.4 90.3 127.4 160.7 160.7L345 318.7c11.2-13.7 30-18.4 46.3-11.6l96 40c18.6 7.7 28.5 28 23.2 47.4l-24 88C481.8 499.9 466 512 448 512C200.6 512 0 311.4 0 64C0 46 12.1 30.2 29.5 25.4l88-24z" />
               </svg>{" "}
-              <span> {phone} </span>{" "}
+              <span> {phoneNumber} </span>{" "}
             </div>{" "}
           </div>{" "}
         </div>{" "}
       </div>{" "}
       <div className="mt-10 text-xl font-serif font-bold">
         <h1 className="lg:text-center text-left"> My Recipes </h1>{" "}
-        <div className="mt-5 grid gap-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
+        <div className="mt-5 grid gap-4 lg:grid-cols-2 md:grid-cols-2 grid-cols-1">
           {" "}
           {recipes
             .filter((recipe) => recipe.UID == UID)
@@ -159,10 +357,6 @@ const MyProfile = () => {
                 {" "}
               </PostCard>
             ))}{" "}
-          {/* <PostCard></PostCard>
-                                                                                  <PostCard></PostCard>
-                                                                                  <PostCard></PostCard>
-                                                                                  <PostCard></PostCard> */}{" "}
         </div>{" "}
       </div>{" "}
       {/* User info update modal */}{" "}
@@ -172,45 +366,78 @@ const MyProfile = () => {
             <h3 className="text-lg font-bold"> Update details </h3>{" "}
             <div className=" mt-2 mb-5 border border-slate-700"> </div>{" "}
             <div className="">
-              <div class="label">
-                <span class="label-text text-white">
+              <div className="label">
+                <span className="label-text text-white">
                   Upload profile picture{" "}
                 </span>{" "}
               </div>{" "}
               <input
+                required
                 type="file"
                 accept=".jpg, .png, .bmp, .gif, .tif, .webp, .heic"
-                // onBlur={handleFileUploadBlur}
-                // onChange={handleFileChange}
+                onBlur={handleFileUploadBlur}
+                onChange={handleFileChange}
                 className="input py-1.5 input-bordered w-full mb-3"
               />
-              <div class="label">
-                <span class="label-text text-white"> Address </span>{" "}
+              <div className="label">
+                <span className="label-text text-white"> Address </span>{" "}
               </div>{" "}
               <input
+                onBlur={handleAddressBlur}
+                onChange={handleAddressChange}
+                value={address}
                 type="text"
-                placeholder="Address"
-                class="input input-bordered w-full mb-3"
+                placeholder="Your address.."
+                className="input input-bordered w-full mb-3"
               />
-              <div class="label">
-                <span class="label-text text-white"> Address </span>{" "}
+              <div className="label">
+                <span className="label-text text-white"> Phone Number </span>{" "}
               </div>{" "}
               <input
+                onBlur={handlePhoneNumberBlur}
+                onChange={handlePhoneNumberChange}
+                value={phoneNumber}
                 type="text"
-                placeholder="Phone number"
-                class="input input-bordered w-full mb-3"
+                placeholder="Your phone number.."
+                className="input input-bordered w-full mb-3"
               />
-              <div className="flex gap-3 justify-center items-center">
-                <button className="btn w-28 bg-orange-400 font-bold text-black hover:bg-orange-600">
-                  Update{" "}
-                </button>{" "}
-                <button
-                  onClick={closeUpdateDetailsModal}
-                  className="btn w-28 bg-orange-400 font-bold text-black hover:bg-orange-600"
+              <div className="flex gap-3 px-3">
+                <svg
+                  fill="orange"
+                  className="w-10"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
                 >
-                  Cancel{" "}
-                </button>{" "}
-              </div>{" "}
+                  {/* <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--> */}
+                  <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
+                </svg>
+                <p className="text-justify text-warning">
+                  To update Address or Phone Number, always upload a new image
+                  or the old image.{" "}
+                  <span className="text-red-600">DO NOT leave empty.</span>
+                </p>
+              </div>
+              <h1 className="text-red-600 mt-3 mb-6">
+                {updateDetailsErrorMsg}
+              </h1>
+              {loading ? (
+                <LoadingSpinner></LoadingSpinner>
+              ) : (
+                <div className="flex gap-3 justify-center items-center">
+                  <button
+                    onClick={handleUpdateBtn}
+                    className="btn w-28 bg-orange-400 font-bold text-black hover:bg-orange-600"
+                  >
+                    Update
+                  </button>
+                  <button
+                    onClick={closeUpdateDetailsModal}
+                    className="btn w-28 bg-orange-400 font-bold text-black hover:bg-orange-600"
+                  >
+                    Cancel{" "}
+                  </button>{" "}
+                </div>
+              )}
             </div>{" "}
           </div>{" "}
         </div>
@@ -221,35 +448,47 @@ const MyProfile = () => {
           <div className="modal-box bg-slate-900">
             <h3 className="text-lg font-bold"> Chnage Password </h3>{" "}
             <div className=" mt-2 mb-5 border border-slate-700"> </div>{" "}
-            <div className="">
-              <div class="label">
-                <span class="label-text text-white"> Email </span>{" "}
+            <form onSubmit={handleChangePassowrd} className="">
+              <div className="label">
+                <span className="label-text text-white"> Old password </span>{" "}
               </div>{" "}
               <input
-                type="text"
-                placeholder="Type email address"
-                class="input input-bordered w-full mb-3"
+                onBlur={handleOldPassword}
+                type="password"
+                placeholder="Type old password."
+                className="input input-bordered w-full mb-3"
               />
-              <div class="label">
-                <span class="label-text text-white"> Password </span>{" "}
+              <div className="label">
+                <span className="label-text text-white"> Password </span>{" "}
               </div>{" "}
               <input
-                type="text"
+                onBlur={handlePasswordBlur}
+                type="password"
                 placeholder="Password"
-                class="input input-bordered w-full mb-3"
+                className="input input-bordered w-full mb-3"
               />
-              <div class="label">
-                <span class="label-text text-white"> Re - type assword </span>{" "}
+              <div className="label">
+                <span className="label-text text-white">
+                  {" "}
+                  Re - type assword{" "}
+                </span>{" "}
               </div>{" "}
               <input
-                type="text"
+                onBlur={handleReTypePasswordBlur}
+                type="password"
                 placeholder="Re-type Password"
-                class="input input-bordered w-full mb-3"
+                className="input input-bordered w-full mb-3"
               />
+              <h1 className="text-red-500">{passwordErrorMsg}</h1>
               <div className="flex gap-3 justify-center items-center mt-5">
-                <button className="btn w-28 bg-orange-400 font-bold text-black hover:bg-orange-600">
+                <input
+                  className="btn w-28 bg-orange-400 font-bold text-black hover:bg-orange-600"
+                  type="submit"
+                  value="Change"
+                />
+                {/* <button className="btn w-28 bg-orange-400 font-bold text-black hover:bg-orange-600">
                   Change{" "}
-                </button>{" "}
+                </button>{" "} */}
                 <button
                   onClick={closeUpdatePasswordsModal}
                   className="btn w-28 bg-orange-400 font-bold text-black hover:bg-orange-600"
@@ -257,7 +496,7 @@ const MyProfile = () => {
                   Cancel{" "}
                 </button>{" "}
               </div>{" "}
-            </div>{" "}
+            </form>{" "}
           </div>{" "}
         </div>
       )}{" "}
