@@ -4,7 +4,7 @@ import { Outlet, useLocation } from "react-router-dom";
 const MasterchefDashboard = () => {
   const location = useLocation();
   return (
-    <div class=" bg-slate-800 shadow-2xl lg:w-3/4 md:w-3/5 sm:w-3/4 mx-auto my-10 p-20">
+    <div className=" bg-slate-800 shadow-2xl lg:w-3/4 md:w-4/5 sm:w-3/4 w-11/12 mx-auto my-10 lg:p-20 md:p-16 sm:p-10 px-5">
       <div className=" ">
         <h1 className="text-2xl font-serif border-b py-5">
           Masterchef Actions Center{" "}
@@ -23,8 +23,8 @@ const MasterchefDashboard = () => {
               }`}
             >
               {" "}
-              Show unverified recipes
-            </a>
+              Show unverified recipes{" "}
+            </a>{" "}
             <a
               href="/masterchef-dashboard/allusers"
               name="radio-1"
@@ -36,8 +36,8 @@ const MasterchefDashboard = () => {
                   : ""
               }`}
             >
-              Show All Chefs
-            </a>
+              Show All Chefs{" "}
+            </a>{" "}
           </div>{" "}
           <div className=" mt-5 border-t w-full">
             <Outlet> </Outlet>{" "}

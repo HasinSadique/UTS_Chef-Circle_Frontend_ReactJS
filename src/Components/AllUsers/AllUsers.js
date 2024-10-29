@@ -6,7 +6,7 @@ const AllUsers = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5076/")
+    fetch("https://localhost:7262/")
       .then((res) => res.json())
       .then((data) => setUsers(data));
   }, []);
@@ -22,7 +22,7 @@ const AllUsers = () => {
       }),
     };
 
-    fetch("http://localhost:5076/promoteuser", requestOptions)
+    fetch("https://localhost:7262/promoteuser", requestOptions)
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
@@ -34,15 +34,16 @@ const AllUsers = () => {
   };
   return (
     <div>
-      <div class="overflow-x-auto">
-        <div class="overflow-x-auto">
-          <table class="table mt-20 ">
+      <div className="overflow-x-auto">
+        <div className="overflow-x-auto">
+          <table className="table mt-20 ">
             {" "}
             {/* <!-- head --> */}{" "}
             <thead className="text-white text-xl">
               <tr>
-                <th className="text-left"> User ID </th>{" "}
-                <th className="text-left"> Name </th>{" "}
+                {/* <th className="text-left"> User ID </th>{" "} */}
+                <th className="text-left"> User Photo </th>{" "}
+                <th className="text-left"> Full Name </th>{" "}
                 <th className="text-center"> Action </th>{" "}
               </tr>{" "}
             </thead>{" "}
@@ -53,18 +54,29 @@ const AllUsers = () => {
                 .filter((user) => user.Role == "Chef")
                 .map((rec, index) => (
                   <tr>
+                    {/* <td>{rec.UID}</td> */}
                     <td>
-                      <div class="flex items-center gap-3">
-                        <div>
-                          <div class="font-bold"> {rec.UID} </div>{" "}
+                      <div className="flex items-center gap-3">
+                        <div className="flex justify-center">
+                          {" "}
+                          {/* <div className="font-bold"> {rec.UID} </div>{" "} */}{" "}
+                          <img
+                            className="rounded-full w-14"
+                            src={
+                              rec.PhotoURL
+                                ? rec.PhotoURL
+                                : "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                            }
+                            alt=""
+                          />
                         </div>{" "}
                       </div>{" "}
                     </td>{" "}
                     <td>
-                      <div class="flex items-center gap-3">
+                      <div className="flex items-center gap-3">
                         <div>
-                          <div class="font-bold"> {rec.Fullname} </div>{" "}
-                          <div class="text-sm opacity-50"> {rec.Role} </div>{" "}
+                          <div className="font-bold"> {rec.Fullname} </div>{" "}
+                          <div className="text-sm opacity-50"> {rec.Role} </div>{" "}
                         </div>{" "}
                       </div>{" "}
                     </td>{" "}
@@ -73,14 +85,14 @@ const AllUsers = () => {
                         onClick={() => {
                           handlePromoteBtn(rec.UID);
                         }}
-                        class="btn btn-warning"
+                        className="btn btn-warning"
                       >
                         {" "}
                         Promote to Masterchef{" "}
                       </button>{" "}
                     </th>{" "}
                   </tr>
-                ))}
+                ))}{" "}
             </tbody>{" "}
             {/* <!-- foot --> */}{" "}
           </table>{" "}

@@ -91,7 +91,7 @@ const Signup = () => {
       };
       // console.log(requestOptions.body);
 
-      fetch("http://localhost:5076/signup", requestOptions)
+      fetch("https://localhost:7262/signup", requestOptions)
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
@@ -132,11 +132,11 @@ const Signup = () => {
                 className="input input-bordered w-full bg-white text-black"
               />
             </div>{" "}
-            <div class="label mb-4">
-              <span class="label-text-alt text-red-500 text-center w-full">
+            <div className="label mb-4">
+              <span className="label-text-alt text-red-500 text-center w-full">
                 *** First and last name cannot be changed once registered
               </span>
-              {/* <span class="label-text-alt">Bottom Right label</span> */}
+              {/* <span className="label-text-alt">Bottom Right label</span> */}
             </div>
             <div className="flex">
               <input
@@ -154,11 +154,11 @@ const Signup = () => {
                 className="input input-bordered w-full bg-white text-black"
               />
             </div>{" "}
-            <div class="label mb-4">
-              <span class="label-text-alt text-red-500 text-center w-full">
-                *** Email and phone number cannot be changed once registered
+            <div className="label mb-4">
+              <span className="label-text-alt text-red-500 text-center w-full">
+                *** Email cannot be changed once registered
               </span>
-              {/* <span class="label-text-alt">Bottom Right label</span> */}
+              {/* <span className="label-text-alt">Bottom Right label</span> */}
             </div>
             <input
               onBlur={handleAddressBlur}

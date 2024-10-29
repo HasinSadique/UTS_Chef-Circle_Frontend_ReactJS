@@ -12,6 +12,7 @@ import RequireMasterchefAuth from "./Components/RequireMasterchefAuth/RequireMas
 import MasterchefDashboard from "./Components/MasterchefDashboard/MasterchefDashboard";
 import MasterchefHome from "./Components/MasterchefHome/MasterchefHome";
 import AllUsers from "./Components/AllUsers/AllUsers";
+import NotFoundPage from "./Components/NotFoundPage/NotFoundPage";
 
 export const CurrentUserContext = createContext("currentUser");
 
@@ -24,31 +25,37 @@ function App() {
       value={[currentUserDetails, setCurrentUserDetails]}
     >
       <div className="App bg-slate-700 text-white">
-        <Navbar> </Navbar>
+        <Navbar> </Navbar>{" "}
         <Routes>
-          <Route path="/" element={<Home />}></Route>
-          <Route path="signin" element={<Login></Login>}></Route>
-          <Route path="signup" element={<Signup></Signup>}></Route>
-          <Route path="myprofile" element={<MyProfile></MyProfile>}></Route>
-          {/* For master chef */}
+          <Route path="/" element={<Home />}>
+            {" "}
+          </Route>{" "}
+          <Route path="signin" element={<Login> </Login>}></Route>
+          <Route path="signup" element={<Signup> </Signup>}></Route>
+          <Route
+            path="myprofile"
+            element={<MyProfile> </MyProfile>}
+          ></Route>{" "}
+          {/* For master chef */}{" "}
           <Route
             path="/masterchef-dashboard"
             element={
               // <RequireMasterchefAuth>
-              <MasterchefDashboard></MasterchefDashboard>
+              <MasterchefDashboard> </MasterchefDashboard>
               // </RequireMasterchefAuth>
             }
           >
-            {/* <Route index element={<MasterchefHome></MasterchefHome>}></Route> */}
+            {/* <Route index element={<MasterchefHome></MasterchefHome>}></Route> */}{" "}
             <Route
               path="unverified-recipes"
-              element={<MasterchefHome></MasterchefHome>}
-            ></Route>
-            <Route path="allusers" element={<AllUsers></AllUsers>}></Route>
-          </Route>
-        </Routes>
-        <Footer></Footer>
-      </div>
+              element={<MasterchefHome> </MasterchefHome>}
+            ></Route>{" "}
+            <Route path="allusers" element={<AllUsers> </AllUsers>}></Route>
+          </Route>{" "}
+          <Route path="/*" element={<NotFoundPage> </NotFoundPage>}></Route>
+        </Routes>{" "}
+        <Footer> </Footer>{" "}
+      </div>{" "}
     </CurrentUserContext.Provider>
   );
 }

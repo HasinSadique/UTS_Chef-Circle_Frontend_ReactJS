@@ -35,7 +35,7 @@ const Login = () => {
       }),
     };
 
-    fetch("http://localhost:5076/signin", requestOptions)
+    fetch("https://localhost:7262/signin", requestOptions)
       .then((res) => res.json())
       .then((data) => {
         if (data.status == "200" && data.success == true) {
@@ -55,6 +55,7 @@ const Login = () => {
             "currentPhotoURL",
             data.result.Result[0].PhotoURL
           );
+          //   console.log("my pic >> ", data.result.Result[0].PhotoURL);
           localStorage.setItem("currentRole", data.result.Result[0].Role);
 
           localStorage.setItem(
