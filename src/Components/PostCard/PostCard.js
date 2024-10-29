@@ -179,14 +179,14 @@ const PostCard = (props) => {
   // }, [rating]);
 
   useEffect(() => {
-    if (location.pathname == "/") {
-      fetch(`https://localhost:7262/getallcomments/${RID}`)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(comment);
-          setCommentData(data.result);
-        });
-    }
+    // if (location.pathname == "/myProfile") {
+    fetch(`https://localhost:7262/getallcomments/${RID}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(comment);
+        setCommentData(data.result);
+      });
+    // }
   }, []);
 
   // console.log("location path", location.pathname);
